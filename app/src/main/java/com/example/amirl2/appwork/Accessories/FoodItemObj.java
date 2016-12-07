@@ -4,24 +4,24 @@ package com.example.amirl2.appwork.Accessories;
  * Created by AmirL2 on 11/27/2016.
  */
 
-public class FoodItem {
+public class FoodItemObj {
     public int id;
     public String name;
     public String serving;
     public int calories;
 
-    public FoodItem(int id, String name, String serving, int calories) {
+    public FoodItemObj(int id, String name, String serving, int calories) {
         this.id = id;
         this.name = name;
         this.serving = serving;
         this.calories = calories;
     }
 
-    public FoodItem(String name) {
+    public FoodItemObj(String name) {
         this.name = name;
     }
 
-    public FoodItem() {
+    public FoodItemObj() {
     }
 
     public int getId() {

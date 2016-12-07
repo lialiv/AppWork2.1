@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.amirl2.appwork.Accessories.DBHelper;
-import com.example.amirl2.appwork.Accessories.FoodItem;
+import com.example.amirl2.appwork.Accessories.FoodItemObj;
 import com.example.amirl2.appwork.R;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class FoodItemsListActivity extends AppCompatActivity {
     ListView lvFoodItems;
     DBHelper dbHelper;
     FoodItemsListAdapter adapter;
-    ArrayList<FoodItem> foodItemsArrayList, searchedResultList;
+    ArrayList<FoodItemObj> foodItemsArrayListObj, searchedResultList;
     ArrayList<FoodItemViewHolder> viewHoldersList;
     ArrayList<Integer> itemsSelected;
 
@@ -46,8 +46,8 @@ public class FoodItemsListActivity extends AppCompatActivity {
         etSearchFood = (EditText) findViewById(R.id.et_search_food);
         lvFoodItems = (ListView) findViewById(R.id.lv_food_items);
         dbHelper = new DBHelper(this);
-        foodItemsArrayList = dbHelper.getAllFoodItems();
-        searchedResultList = new ArrayList<FoodItem>(foodItemsArrayList);
+        foodItemsArrayListObj = dbHelper.getAllFoodItems();
+        searchedResultList = new ArrayList<FoodItemObj>(foodItemsArrayListObj);
 
         viewHoldersList = new ArrayList<>();
         itemsSelected = new ArrayList<>();
@@ -81,13 +81,13 @@ public class FoodItemsListActivity extends AppCompatActivity {
                 //clear the initial data set
                 searchedResultList.clear();
 
-                for(int i=0;i<foodItemsArrayList.size();i++)
+                for(int i = 0; i< foodItemsArrayListObj.size(); i++)
                 {
-                    String foodName=foodItemsArrayList.get(i).name;
+                    String foodName= foodItemsArrayListObj.get(i).name;
                     if(textLength<=foodName.length()){
                         //compare the String in EditText with Names in the ArrayList
                         if(searchString.equalsIgnoreCase(foodName.substring(0,textLength)))
-                            searchedResultList.add(foodItemsArrayList.get(i));
+                            searchedResultList.add(foodItemsArrayListObj.get(i));
                     }
                 }
 
@@ -111,10 +111,10 @@ public class FoodItemsListActivity extends AppCompatActivity {
 
     }
 
-    public class FoodItemsListAdapter extends ArrayAdapter<FoodItem> {
+    public class FoodItemsListAdapter extends ArrayAdapter<FoodItemObj> {
 
-        public FoodItemsListAdapter(Context context, ArrayList<FoodItem> foodItems) {
-            super(context, 0, foodItems);
+        public FoodItemsListAdapter(Context context, ArrayList<FoodItemObj> foodItemObjs) {
+            super(context, 0, foodItemObjs);
         }
 
 
@@ -138,16 +138,16 @@ public class FoodItemsListActivity extends AppCompatActivity {
                 viewHolder.chbx.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v;
-                        FoodItem foodItem = (FoodItem) cb.getTag();
+                        FoodItemObj foodItemObj = (FoodItemObj) cb.getTag();
 
                         if (cb.isChecked()) {
-                            itemsSelected.add(foodItem.id);
+                            itemsSelected.add(foodItemObj.id);
                             Toast.makeText(getApplicationContext(),
                                     "itemsSelected: " + itemsSelected.size(),
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            if (itemsSelected.contains(foodItem.id)) {
-                                itemsSelected.remove(itemsSelected.indexOf(foodItem.id));
+                            if (itemsSelected.contains(foodItemObj.id)) {
+                                itemsSelected.remove(itemsSelected.indexOf(foodItemObj.id));
                                 Toast.makeText(getApplicationContext(),
                                         "itemsSelected: " + itemsSelected.size(),
                                         Toast.LENGTH_LONG).show();
@@ -161,14 +161,14 @@ public class FoodItemsListActivity extends AppCompatActivity {
                 viewHolder = (FoodItemViewHolder) convertView.getTag();
             }
 
-            FoodItem foodItem = getItem(position);
+            FoodItemObj foodItemObj = getItem(position);
 
-            if (foodItem != null) {
-                viewHolder.id = foodItem.id;
-                viewHolder.tvFoodName.setText(foodItem.name);
-                viewHolder.tvServing.setText(foodItem.serving);
-                viewHolder.tvCalories.setText("" + foodItem.calories);
-                viewHolder.chbx.setTag(foodItem);
+            if (foodItemObj != null) {
+                viewHolder.id = foodItemObj.id;
+                viewHolder.tvFoodName.setText(foodItemObj.name);
+                viewHolder.tvServing.setText(foodItemObj.serving);
+                viewHolder.tvCalories.setText("" + foodItemObj.calories);
+                viewHolder.chbx.setTag(foodItemObj);
             }
 
 

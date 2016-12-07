@@ -70,10 +70,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private void initiateFoodItemsList(SQLiteDatabase db) {
 
         FoodItemsData foodItemsData = new FoodItemsData();
-        ArrayList<FoodItem> foodItemsDataList = foodItemsData.foodItemsDataList;
+        ArrayList<FoodItemObj> foodItemsDataListObj = foodItemsData.FOOD_ITEMS_DATA_LIST_OBJ;
 
         ContentValues contentValues = new ContentValues();
-        for (FoodItem item : foodItemsDataList) {
+        for (FoodItemObj item : foodItemsDataListObj) {
 
             contentValues.put(FOOD_ITEMS_COLUMN_FOOD_ID, item.getId());
             contentValues.put(FOOD_ITEMS_COLUMN_FOOD_NAME, item.getName());
@@ -92,7 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public boolean insertFoodToDailyLogs(FoodItem item) {
+    public boolean insertFoodToDailyLogs(FoodItemObj item) {
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
@@ -161,19 +161,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{Integer.toString(id)});
     }
 
-    public ArrayList<FoodItem> getAllFoodItems() {
-        ArrayList<FoodItem> listFood = new ArrayList<FoodItem>();
+    public ArrayList<FoodItemObj> getAllFoodItems() {
+        ArrayList<FoodItemObj> listFood = new ArrayList<FoodItemObj>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + FOOD_ITEMS_TABLE_NAME, null);
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
-            FoodItem foodItem = new FoodItem();
-            foodItem.setId((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_ID))));
-            foodItem.setName((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_NAME))));
-            foodItem.setServing((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_SERVING_SIZE))));
-            foodItem.setCalories((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_CALORIES))));
-            listFood.add(foodItem);
+            FoodItemObj foodItemObj = new FoodItemObj();
+            foodItemObj.setId((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_ID))));
+            foodItemObj.setName((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_NAME))));
+            foodItemObj.setServing((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_SERVING_SIZE))));
+            foodItemObj.setCalories((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_CALORIES))));
+            listFood.add(foodItemObj);
             res.moveToNext();
         }
         return listFood;
@@ -181,33 +181,47 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ArrayList<DailyLogItem> getDailyLogItems() {
+    public ArrayList<DailyLogObj> getDailyLogItemsForToday() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
         String currentDate = sdf.format(calendar.getTime());
 
-        ArrayList<DailyLogItem> listFood = new ArrayList<DailyLogItem>();
+        ArrayList<DailyLogObj> listFood = new ArrayList<DailyLogObj>();
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + " WHERE " + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
         Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + ", " + FOOD_ITEMS_TABLE_NAME + " WHERE " +
-         DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_FOOD_ID + " = " + FOOD_ITEMS_TABLE_NAME + "." + FOOD_ITEMS_COLUMN_FOOD_ID + " AND " + DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
+                DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_FOOD_ID + " = " + FOOD_ITEMS_TABLE_NAME + "." + FOOD_ITEMS_COLUMN_FOOD_ID + " AND " + DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
+
+        listFood = insertLogObjData(res, listFood);
+        return listFood;
+    }
+
+    public ArrayList<DailyLogObj> getDailyLogItems(String date) {
+
+        ArrayList<DailyLogObj> listFood = new ArrayList<DailyLogObj>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + ", " + FOOD_ITEMS_TABLE_NAME + " WHERE " +
+                DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_FOOD_ID + " = " + FOOD_ITEMS_TABLE_NAME + "." + FOOD_ITEMS_COLUMN_FOOD_ID + " AND " + DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + date + "' ", null);
+
+        listFood = insertLogObjData(res, listFood);
+        return listFood;
+    }
+
+    public ArrayList<DailyLogObj> insertLogObjData(Cursor res, ArrayList<DailyLogObj> listFood) {
 
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
-            DailyLogItem dailyLogItem = new DailyLogItem();
-            dailyLogItem.setId((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_ID))));
-            dailyLogItem.setFoodName((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_NAME))));
-            dailyLogItem.setServing((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_SERVING_SIZE))));
-            dailyLogItem.setCalories((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_CALORIES))));
-            dailyLogItem.setQuantity((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_QUANTITY))));
-            listFood.add(dailyLogItem);
+            DailyLogObj dailyLogObj = new DailyLogObj();
+            dailyLogObj.setId((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_ID))));
+            dailyLogObj.setFoodName((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_NAME))));
+            dailyLogObj.setServing((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_SERVING_SIZE))));
+            dailyLogObj.setCalories((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_CALORIES))));
+            dailyLogObj.setQuantity((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_QUANTITY))));
+            listFood.add(dailyLogObj);
             res.moveToNext();
         }
         return listFood;
     }
 
-
 }
-
-

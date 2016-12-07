@@ -4,7 +4,7 @@ package com.example.amirl2.appwork.Accessories;
  * Created by AmirL2 on 12/5/2016.
  */
 
-public class DailyLogItem {
+public class DailyLogObj {
     public int id;
     public String date;
     public int logId;

@@ -1,59 +1,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
->
+    android:descendantFocusability="blocksDescendants"
+    >
 
     <CheckBox
         android:id="@+id/chbx_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:clickable="false"
         android:focusable="false"
-        android:focusableInTouchMode="false"
-        />
+        android:focusableInTouchMode="false" />
 
 
     <TextView
         android:id="@+id/tv_food_name"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="food name"
-        android:layout_weight="1"
-        />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_serving"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="serving size"
-        android:layout_weight="1"
+        android:textStyle="bold"
+
         />
 
     <TextView
         android:id="@+id/tv_calories"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="calories"
-        android:layout_weight="1"
-        />
+        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tv_quantity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="quantity"
-        android:layout_weight="1"
-        android:gravity="center"
-        />
+        <TextView
+            android:id="@+id/tv_quantity"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textStyle="bold"
+
+            />
 
     <TextView
         android:id="@+id/tv_total"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Total"
-        android:layout_weight="1"
         android:gravity="center"
-        />
+        android:text="Total"
+        android:textStyle="bold" />
 </LinearLayout>

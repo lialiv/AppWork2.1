@@ -20,6 +20,7 @@ public class FoodItemsData {
 
         // @formatter:off
 
+        foodItemsDataListObj.add(new FoodItemObj(0, "33% Cream Cheese",                          "1 oz",         100));
         foodItemsDataListObj.add(new FoodItemObj(1, "1000 Island, Salad Drsng,Local",            "1 Tbsp",       25));
         foodItemsDataListObj.add(new FoodItemObj(2, "1000 Island, Salad Drsng,Reglr",            "1 Tbsp",       60));
         foodItemsDataListObj.add(new FoodItemObj(3, "40% Bran Flakes, Kellogg's",                "1 oz",         90));

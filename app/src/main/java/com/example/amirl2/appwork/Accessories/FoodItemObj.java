@@ -9,12 +9,34 @@ public class FoodItemObj {
     public String name;
     public String serving;
     public int calories;
+    public int quantity;
+    public boolean isSelected;
 
     public FoodItemObj(int id, String name, String serving, int calories) {
         this.id = id;
         this.name = name;
         this.serving = serving;
         this.calories = calories;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected){
+        this.isSelected = isSelected;
+    }
+
+    public void toggleSelected() {
+        isSelected = !isSelected;
     }
 
     public FoodItemObj(String name) {

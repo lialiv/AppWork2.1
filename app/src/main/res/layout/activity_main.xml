@@ -52,32 +52,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:weightSum="3">
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        >
 
-        <EditText
-            android:id="@+id/et_food_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/btn_add_manually"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:hint="Food Item" />
+            android:src="@drawable/ic_add_black_48dp"
+            android:background="@drawable/button_shape"
+            android:layout_margin="@dimen/activity_vertical_margin"
 
-        <Button
+             />
+
+        <ImageButton
             android:id="@+id/btn_food_items_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/et_food_item"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/btn_add_manually"
             android:layout_weight="1"
-            android:hint="Add From List" />
+            android:src="@drawable/ic_list_black_36dp"
+            android:background="@drawable/button_shape"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_old_logs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="50dp"
             android:layout_toRightOf="@id/btn_old_logs"
             android:layout_weight="1"
-            android:text="Old Records" />
+            android:background="@drawable/button_shape"
+            android:src="@drawable/ic_history_black_48dp"
+            android:layout_margin="@dimen/activity_vertical_margin"
+             />
     </LinearLayout>
-
 
 
     <ListView

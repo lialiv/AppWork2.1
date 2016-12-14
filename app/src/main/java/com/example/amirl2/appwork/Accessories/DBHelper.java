@@ -4,8 +4,11 @@ package com.example.amirl2.appwork.Accessories;
  * Created by AmirL2 on 11/27/2016.
  */
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,7 +26,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "WatchYourFood.db";
     private static final int DATABASE_VERSION = 1;
     public static final String DAILY_LOGS_TABLE_NAME = "DailyLogs";
-    public static final String DAILY_LOGS_COLUMN_ID = "LogID";
     public static final String DAILY_LOGS_COLUMN_FOOD_ID = "FoodID";
     public static final String DAILY_LOGS_COLUMN_FOOD_QUANTITY = "FoodQuantity";
     public static final String DAILY_LOGS_COLUMN_LOG_DATE = "LogDate";
@@ -53,7 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL(
                 "CREATE TABLE " + DAILY_LOGS_TABLE_NAME +
-                        "( " + DAILY_LOGS_COLUMN_ID + " integer primary key, " + DAILY_LOGS_COLUMN_FOOD_ID + " integer, " + DAILY_LOGS_COLUMN_FOOD_QUANTITY + " integer, "
+                        "( " + DAILY_LOGS_COLUMN_FOOD_ID + " integer, " + DAILY_LOGS_COLUMN_FOOD_QUANTITY + " integer, "
                         + DAILY_LOGS_COLUMN_LOG_DATE + " text)")
         ;
 
@@ -107,37 +109,39 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public boolean insertFoodsListToDailyLogs(ArrayList<Integer> foodItemsIds) {
+    public boolean insertFoodsListToDailyLogs(HashMap<Integer, Integer> selectedItemsIdQuantities) {
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
         String currentDate = sdf.format(calendar.getTime());
+        ArrayList<Integer> itemsIds = new ArrayList<Integer>(selectedItemsIdQuantities.keySet());
+
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        for (Integer foodId : foodItemsIds) {
+        for (Integer foodId : itemsIds) {
             contentValues.put(DAILY_LOGS_COLUMN_LOG_DATE, currentDate);
             contentValues.put(DAILY_LOGS_COLUMN_FOOD_ID, foodId);
-            contentValues.put(DAILY_LOGS_COLUMN_FOOD_QUANTITY, 1);
+            contentValues.put(DAILY_LOGS_COLUMN_FOOD_QUANTITY, selectedItemsIdQuantities.get(foodId));
             db.insert(DAILY_LOGS_TABLE_NAME, null, contentValues);
         }
 
         return true;
     }
-
-    public Cursor getData(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + DAILY_LOGS_TABLE_NAME + " + where " + DAILY_LOGS_COLUMN_ID + " = " + id, null);
-        return res;
-    }
-
-    public int getItem(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + DAILY_LOGS_TABLE_NAME + " where " + DAILY_LOGS_COLUMN_ID + " = " + id, null);
-        res.moveToFirst();
-        int foodItemId = res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_ID));
-        return foodItemId;
-    }
+//
+//    public Cursor getData(int id) {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res = db.rawQuery("select * from " + DAILY_LOGS_TABLE_NAME + " + where " + DAILY_LOGS_COLUMN_FOOD_ID+ " = " + id, null);
+//        return res;
+//    }
+//
+//    public int getItem(int id) {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor res = db.rawQuery("select * from " + DAILY_LOGS_TABLE_NAME + " where " + DAILY_LOGS_COLUMN_ID + " = " + id, null);
+//        res.moveToFirst();
+//        int foodItemId = res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_ID));
+//        return foodItemId;
+//    }
 
     public int numberOfRows() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -186,42 +190,61 @@ public class DBHelper extends SQLiteOpenHelper {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
         String currentDate = sdf.format(calendar.getTime());
 
-        ArrayList<DailyLogObj> listFood = new ArrayList<DailyLogObj>();
+        ArrayList<DailyLogObj> dailyLogsList = new ArrayList<DailyLogObj>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + " WHERE " + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
+//        Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + ", " + FOOD_ITEMS_TABLE_NAME + " WHERE " +
+//                DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_FOOD_ID + " = " + FOOD_ITEMS_TABLE_NAME + "." + FOOD_ITEMS_COLUMN_FOOD_ID + " AND " + DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
+
+        dailyLogsList = insertLogObjData(res, dailyLogsList);
+        return dailyLogsList;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public HashMap<Integer, Integer> getDailyLogItemsAsMapForToday() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        String currentDate = sdf.format(calendar.getTime());
+
         SQLiteDatabase db = this.getReadableDatabase();
 //        Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + " WHERE " + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
         Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + ", " + FOOD_ITEMS_TABLE_NAME + " WHERE " +
                 DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_FOOD_ID + " = " + FOOD_ITEMS_TABLE_NAME + "." + FOOD_ITEMS_COLUMN_FOOD_ID + " AND " + DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + currentDate + "' ", null);
 
-        listFood = insertLogObjData(res, listFood);
-        return listFood;
+        HashMap<Integer, Integer> dailyItemsMap = new HashMap<>();
+        while (res.isAfterLast() == false) {
+            int itemId = (res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_ID)));
+            int quantity = (res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_QUANTITY)));
+            dailyItemsMap.put(itemId, quantity);
+            res.moveToNext();
+        }
+
+        return dailyItemsMap;
     }
 
     public ArrayList<DailyLogObj> getDailyLogItems(String date) {
 
-        ArrayList<DailyLogObj> listFood = new ArrayList<DailyLogObj>();
+        ArrayList<DailyLogObj> dailyLogsList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + DAILY_LOGS_TABLE_NAME + ", " + FOOD_ITEMS_TABLE_NAME + " WHERE " +
                 DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_FOOD_ID + " = " + FOOD_ITEMS_TABLE_NAME + "." + FOOD_ITEMS_COLUMN_FOOD_ID + " AND " + DAILY_LOGS_TABLE_NAME + "." + DAILY_LOGS_COLUMN_LOG_DATE + " = '" + date + "' ", null);
 
-        listFood = insertLogObjData(res, listFood);
-        return listFood;
+        dailyLogsList = insertLogObjData(res, dailyLogsList);
+        return dailyLogsList;
     }
 
-    public ArrayList<DailyLogObj> insertLogObjData(Cursor res, ArrayList<DailyLogObj> listFood) {
+    public ArrayList<DailyLogObj> insertLogObjData(Cursor res, ArrayList<DailyLogObj> dailyLogsList) {
 
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
             DailyLogObj dailyLogObj = new DailyLogObj();
-            dailyLogObj.setId((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_ID))));
-            dailyLogObj.setFoodName((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_FOOD_NAME))));
-            dailyLogObj.setServing((res.getString(res.getColumnIndex(FOOD_ITEMS_COLUMN_SERVING_SIZE))));
-            dailyLogObj.setCalories((res.getInt(res.getColumnIndex(FOOD_ITEMS_COLUMN_CALORIES))));
+            dailyLogObj.setFoodId((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_ID))));
             dailyLogObj.setQuantity((res.getInt(res.getColumnIndex(DAILY_LOGS_COLUMN_FOOD_QUANTITY))));
-            listFood.add(dailyLogObj);
+            dailyLogsList.add(dailyLogObj);
             res.moveToNext();
         }
-        return listFood;
+        return dailyLogsList;
     }
 
 }

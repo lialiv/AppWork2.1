@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.amirl2.appwork.activities.FoodItemsListActivity">
+    tools:context="com.amirl2.appwork.activities.FoodItemsListActivity">
 
     <ImageButton
         android:id="@+id/btn_add_items_to_logs"

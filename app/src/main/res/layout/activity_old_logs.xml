@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="5dp"
-    tools:context="com.example.amirl2.appwork.activities.OldLogsActivity">
+    tools:context="com.amirl2.appwork.activities.OldLogsActivity">
 
     <TextView
         android:id="@+id/tv_date_day"

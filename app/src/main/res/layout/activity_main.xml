@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="5dp"
-    tools:context="com.example.amirl2.appwork.activities.MainActivity">
+    tools:context="com.amirl2.appwork.activities.MainActivity">
 
 
     <TextView

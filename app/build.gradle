@@ -4,7 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "com.example.amirl2.appwork"
+        applicationId "com.amirl2.appwork"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
@@ -26,4 +26,5 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support.test.espresso:espresso-core:2.2.2'
 }
